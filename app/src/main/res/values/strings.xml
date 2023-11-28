@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Surfmate</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Surfmate</string>
+    <string name="nav_header_subtitle">20099913@mail.wit.ie</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_favourites">View Favourites</string>
+
+    <string name="menu_list">Surf Spots</string>
+    <string name="menu_add">Add a Surf Spot</string>
+    <string name="menu_about">About</string>
+
+    <string name="save_surfspot">Save Surf Spot</string>
+    <string name="hint_surfspotName">Name</string>
+    <string name="menu_cancelSurfspot">Cancel</string>
+    <string name="button_addImage"> Add Image </string>
+    <string name="edit_image"> Edit Image </string>
+    <string name="delete_surfspot">Delete Surf Spot</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="name_title">Name</string>
+    <string name="observations_title">Observations</string>
+    <string name="viewMap_button">View Map</string>
+    <string name="rating">Spot Rating</string>
+    <string name="surfspotError">Error adding spot</string>
+    <string name="some_fields_required">More fields required</string>
+    <string name="aboutUs_message">Welcome to Surfmate !</string>
+
+</resources>

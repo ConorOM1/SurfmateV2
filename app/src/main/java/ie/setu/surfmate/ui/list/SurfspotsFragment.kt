@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ie.setu.surfmate.adapters.SurfmateAdapter
 import ie.setu.surfmate.adapters.SurfmateListener
@@ -23,6 +24,7 @@ class SurfspotsFragment : Fragment(), SurfmateListener {
     lateinit var app: SurfmateApp
     private lateinit var listViewModel: SurfspotsViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.i("ON CREATE LIST FRAGMENT")
@@ -30,7 +32,8 @@ class SurfspotsFragment : Fragment(), SurfmateListener {
     }
 
     override fun onSurfspotClick(surfspot: SurfmateModel) {
-        // TBD edit surf spot
+        val action = SurfspotsFragmentDirections.actionListFragmentToAddFragment(surfspot.id)
+        findNavController().navigate(action)
     }
 
     override fun onCreateView(

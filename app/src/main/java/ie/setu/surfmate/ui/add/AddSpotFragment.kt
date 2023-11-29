@@ -20,6 +20,7 @@ import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 
 class AddSpotFragment : Fragment() {
 
@@ -29,6 +30,8 @@ class AddSpotFragment : Fragment() {
     private lateinit var ratingBar: RatingBar
 
     private lateinit var viewModel: AddSpotViewModel
+    private val args by navArgs<AddSpotFragmentArgs>()
+
 
 
     var surfspot = SurfmateModel()
@@ -58,6 +61,7 @@ class AddSpotFragment : Fragment() {
 
         _binding = FragmentAddSpotBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val surfspotId = args.surfspotId
 
         addViewModel = ViewModelProvider(this).get(AddSpotViewModel::class.java)
         addViewModel.observableStatus.observe(viewLifecycleOwner, Observer {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "266385521910",
+    "project_id": "surfmate-f7b51",
+    "storage_bucket": "surfmate-f7b51.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266385521910:android:da154a52499bf8490d00d7",
+        "android_client_info": {
+          "package_name": "ie.setu.surfmate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuqUV3FTBeD86pp91HZCt_68e_sivvx9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -18,9 +18,12 @@ import ie.setu.surfmate.models.SurfmateModel
 import timber.log.Timber
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import ie.setu.surfmate.ui.auth.LoggedInViewModel
+import ie.setu.surfmate.ui.list.SurfspotsViewModel
 
 class AddSpotFragment : Fragment() {
 
@@ -29,8 +32,10 @@ class AddSpotFragment : Fragment() {
     private lateinit var addViewModel: AddSpotViewModel
     private lateinit var ratingBar: RatingBar
 
-    private lateinit var viewModel: AddSpotViewModel
+    private lateinit var addSpotViewModel: AddSpotViewModel
     private val args by navArgs<AddSpotFragmentArgs>()
+    private val surfspotsViewModel: SurfspotsViewModel by activityViewModels()
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
 
 
@@ -41,7 +46,7 @@ class AddSpotFragment : Fragment() {
         if (result.resultCode == AppCompatActivity.RESULT_OK) {
             val imageUri: Uri? = result.data?.data
             imageUri?.let {
-                surfspot.image = it
+                surfspot.image = it.toString()
                 binding.SurfspotImage.setImageURI(it)
             }
         }
@@ -63,8 +68,8 @@ class AddSpotFragment : Fragment() {
         val root: View = binding.root
         val surfspotId = args.surfspotId
 
-        addViewModel = ViewModelProvider(this).get(AddSpotViewModel::class.java)
-        addViewModel.observableStatus.observe(viewLifecycleOwner, Observer {
+        addSpotViewModel = ViewModelProvider(this).get(AddSpotViewModel::class.java)
+        addSpotViewModel.observableStatus.observe(viewLifecycleOwner, Observer {
                 status -> status?.let { render(status) }
         })
 
@@ -99,15 +104,21 @@ class AddSpotFragment : Fragment() {
             surfspot.rating = ratingBar.rating
 
             if (surfspot.observations.isNotEmpty() && surfspot.name.isNotEmpty()) {
-                if (surfspot.id != 0L) {
-                    // Update existing surf spot
-                    addViewModel.updateSurfspot(surfspot)
-                    Timber.i("UPDATING SURF SPOT: $surfspot")
-                } else {
-                    // Add new surf spot
-                    addViewModel.addSurfspot(SurfmateModel(name = surfspot.name, observations = surfspot.observations, image = surfspot.image, rating = surfspot.rating))
-                    Timber.i("ADDING NEW SURF SPOT: $surfspot")
-                }
+                Timber.i("ADDING NEW SURF SPOT: $surfspot")
+
+                addSpotViewModel.addSurfspot(loggedInViewModel.liveFirebaseUser,
+                    SurfmateModel(
+                        uid = surfspot.uid,
+                        name = surfspot.name,
+                        observations = surfspot.observations,
+                        image = surfspot.image,
+                        lat = surfspot.lat,
+                        lng = surfspot.lng,
+                        zoom = surfspot.zoom,
+                        rating = surfspot.rating,
+                        email = loggedInViewModel.liveFirebaseUser.value?.email ?: ""
+                    ))
+
                 findNavController().popBackStack() // Navigate back after operation
             } else {
                 Snackbar.make(it, R.string.some_fields_required, Snackbar.LENGTH_LONG).show()

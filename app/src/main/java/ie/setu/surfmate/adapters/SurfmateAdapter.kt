@@ -1,6 +1,5 @@
 package ie.setu.surfmate.adapters
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -36,11 +35,14 @@ class SurfmateAdapter constructor(
         fun bind(surfspot: SurfmateModel, listener: SurfmateListener) {
             binding.name.text = surfspot.name
 
-            if (surfspot.image != Uri.EMPTY) {
-                Picasso.get().load(surfspot.image).resize(400, 400).into(binding.imageIcon)
-            } else {
-                binding.imageIcon.setImageResource(R.drawable.surfmate_logo)
-            }
+            surfspot.image?.let {
+                Picasso.get()
+                    .load(it)
+                    .placeholder(com.google.android.material.R.drawable.mtrl_switch_thumb_unchecked)
+                    .error(R.drawable.surfmate_logo)
+                    .resize(400, 400)
+                    .into(binding.imageIcon)
+            } ?: binding.imageIcon.setImageResource(R.drawable.surfmate_logo)
 
             binding.root.setOnClickListener { listener.onSurfspotClick(surfspot) }
         }

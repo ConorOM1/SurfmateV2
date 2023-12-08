@@ -81,7 +81,7 @@ class AddSpotFragment : Fragment() {
         }
 
         binding.chooseImage.setOnClickListener {
-            val galleryIntent = Intent(Intent.ACTION_PICK)
+            val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
             galleryIntent.type = "image/*"
             pickImageLauncher.launch(galleryIntent)
         }
@@ -99,16 +99,17 @@ class AddSpotFragment : Fragment() {
 
     fun setButtonListener(layout: FragmentAddSpotBinding) {
         layout.btnAdd.setOnClickListener {
-            surfspot.name = binding.name.text.toString()
-            surfspot.observations = binding.observations.text.toString()
+            surfspot.name = binding.name.text?.toString() ?: ""
+            surfspot.observations = binding.observations.text?.toString() ?: ""
             surfspot.rating = ratingBar.rating
 
-            if (surfspot.observations.isNotEmpty() && surfspot.name.isNotEmpty()) {
+            if (!surfspot.observations.isNullOrEmpty() && !surfspot.name.isNullOrEmpty()) {
                 Timber.i("ADDING NEW SURF SPOT: $surfspot")
 
                 addSpotViewModel.addSurfspot(loggedInViewModel.liveFirebaseUser,
                     SurfmateModel(
                         uid = surfspot.uid,
+                        id = surfspot.id,
                         name = surfspot.name,
                         observations = surfspot.observations,
                         image = surfspot.image,

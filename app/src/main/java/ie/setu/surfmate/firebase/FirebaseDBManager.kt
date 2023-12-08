@@ -2,21 +2,38 @@ package ie.setu.surfmate.firebase
 
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import ie.setu.surfmate.firebase.FirebaseDBManager.database
+import com.google.firebase.database.*
 import ie.setu.surfmate.models.SurfmateModel
 import ie.setu.surfmate.models.SurfmateStore
 import timber.log.Timber
 
 object FirebaseDBManager : SurfmateStore {
     var database: DatabaseReference = FirebaseDatabase.getInstance().reference
-    override fun findAll(surfspotsList: MutableLiveData<List<SurfmateModel>>) {
+    override fun findAll(surfspots: MutableLiveData<List<SurfmateModel>>) {
         TODO("Not yet implemented")
     }
 
-    override fun findAll(userid: String, surfspotsList: MutableLiveData<List<SurfmateModel>>) {
-        TODO("Not yet implemented")
+    override fun findAll(userid: String, surfspots: MutableLiveData<List<SurfmateModel>>) {
+
+        database.child("user-surfspots").child(userid)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    Timber.i("Firebase Surf spot error : ${error.message}")
+                }
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val localList = ArrayList<SurfmateModel>()
+                    val children = snapshot.children
+                    children.forEach {
+                        val surfspot = it.getValue(SurfmateModel::class.java)
+                        surfspot?.let { localList.add(it) }
+                    }
+                    database.child("user-surfspots").child(userid)
+                        .removeEventListener(this)
+
+                    surfspots.value = localList
+                }
+            })
     }
 
     override fun findById(
@@ -55,20 +72,3 @@ object FirebaseDBManager : SurfmateStore {
     }
 
 }
-    fun findAll(surfspotsList: MutableLiveData<List<SurfmateModel>>) {
-        TODO("Not yet implemented")
-    }
-
-    fun findAll(userid: String, surfspotsList: MutableLiveData<List<SurfmateModel>>) {
-        TODO("Not yet implemented")
-    }
-
-    fun findById(userid: String, surfspotid: String, surfspot: MutableLiveData<SurfmateModel>) {
-        TODO("Not yet implemented")
-    }
-
-
-
-    fun delete(userid: String, surfspotid: String) {
-        TODO("Not yet implemented")
-    }

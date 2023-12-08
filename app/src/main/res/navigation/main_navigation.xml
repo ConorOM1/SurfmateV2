@@ -31,7 +31,7 @@
             app:destination="@id/aboutFragment" />
         <argument
             android:name="surfspotId"
-            app:argType="long"
+            app:argType="string"
             android:defaultValue="-1L" />
     </fragment>
 

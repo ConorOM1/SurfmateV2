@@ -7,60 +7,49 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ie.setu.surfmate.adapters.SurfmateAdapter
 import ie.setu.surfmate.adapters.SurfmateListener
 import ie.setu.surfmate.databinding.FragmentListSpotsBinding
-import ie.setu.surfmate.main.SurfmateApp
 import ie.setu.surfmate.models.SurfmateModel
+import ie.setu.surfmate.ui.auth.LoginRegisterViewModel
 import timber.log.Timber
 
 class SurfspotsFragment : Fragment(), SurfmateListener {
 
     private var _binding: FragmentListSpotsBinding? = null
-
     private val binding get() = _binding!!
-    lateinit var app: SurfmateApp
     private lateinit var listViewModel: SurfspotsViewModel
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.i("ON CREATE LIST FRAGMENT")
-
-    }
-
-    override fun onSurfspotClick(surfspot: SurfmateModel) {
-        val action = SurfspotsFragmentDirections.actionListFragmentToAddFragment(surfspot.id)
-        findNavController().navigate(action)
-    }
+    private lateinit var loginRegisterViewModel: LoginRegisterViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(SurfspotsViewModel::class.java)
-
         _binding = FragmentListSpotsBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
+
         listViewModel = ViewModelProvider(this).get(SurfspotsViewModel::class.java)
-        listViewModel.observableSurfspots.observe(viewLifecycleOwner, Observer {
-                surfspots ->
-            surfspots?.let { render(surfspots)}
+        loginRegisterViewModel = ViewModelProvider(requireActivity()).get(LoginRegisterViewModel::class.java)
+
+        loginRegisterViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+            if (firebaseUser != null) {
+                listViewModel.setFirebaseUser(firebaseUser)
+            }
         })
+
+        listViewModel.observableSurfspotsList.observe(viewLifecycleOwner, Observer { surfspots ->
+            surfspots?.let { render(surfspots as ArrayList<SurfmateModel>) }
+        })
+
         return binding.root
     }
 
-    private fun render(surfspots: List<SurfmateModel>) {
-        binding.recyclerView.adapter = SurfmateAdapter(surfspots,this)
-        if (surfspots.isEmpty()) {
-            binding.recyclerView.visibility = View.GONE
-        } else {
-            binding.recyclerView.visibility = View.VISIBLE
-        }
+    override fun onSurfspotClick(surfspot: SurfmateModel) {
+        Timber.i("Surfspot clicked: ${surfspot.name}")
+    }
+
+    private fun render(surfspots: ArrayList<SurfmateModel>) {
+        binding.recyclerView.adapter = SurfmateAdapter(surfspots, this)
     }
 
     override fun onResume() {

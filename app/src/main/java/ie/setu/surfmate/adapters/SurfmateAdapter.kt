@@ -13,7 +13,7 @@ interface SurfmateListener {
 }
 
 class SurfmateAdapter constructor(
-    private var surfspots: List<SurfmateModel>,
+    private var surfspots: ArrayList<SurfmateModel>,
     private val listener: SurfmateListener
 ) : RecyclerView.Adapter<SurfmateAdapter.MainHolder>() {
 

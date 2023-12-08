@@ -12,7 +12,7 @@ internal fun getId(): Long {
 
 object SurfmateManager : SurfmateStore {
 
-    private val surfspots = ArrayList<SurfmateModel>()
+     val surfspots = ArrayList<SurfmateModel>()
 
 
 
@@ -35,11 +35,11 @@ object SurfmateManager : SurfmateStore {
         surfspots.forEach { Timber.i("${it}") }
     }
 
-    override fun findAll(surfspotsList: MutableLiveData<List<SurfmateModel>>) {
+    override fun findAll(surfspots: MutableLiveData<List<SurfmateModel>>) {
         TODO("Not yet implemented")
     }
 
-    override fun findAll(userid: String, surfspotsList: MutableLiveData<List<SurfmateModel>>) {
+    override fun findAll(userid: String, surfspots: MutableLiveData<List<SurfmateModel>>) {
         TODO("Not yet implemented")
     }
 

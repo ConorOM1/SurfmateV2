@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_listFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_updateSurfspotsFragment"
+            app:destination="@id/updateSurfspotsFragment" />
     </fragment>
 
     <fragment
@@ -30,7 +33,7 @@
             android:id="@+id/action_addFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
         <argument
-            android:name="surfspotId"
+            android:name="surfspotid"
             app:argType="string"
             android:defaultValue="-1L" />
     </fragment>
@@ -46,5 +49,16 @@
         <action
             android:id="@+id/action_aboutFragment_to_addFragment"
             app:destination="@id/addFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateSurfspotsFragment"
+        android:name="ie.setu.surfmate.ui.update.UpdateSurfspotsFragment"
+        android:label="UpdateSurfspotsFragment" >
+        <action
+            android:id="@+id/action_updateSurfspotsFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <argument
+            android:name="surfspotid"
+            app:argType="string" />
     </fragment>
 </navigation>

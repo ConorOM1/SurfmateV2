@@ -45,9 +45,14 @@ class AddSpotFragment : Fragment() {
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == AppCompatActivity.RESULT_OK) {
             val imageUri: Uri? = result.data?.data
-            imageUri?.let {
-                surfspot.image = it.toString()
-                binding.SurfspotImage.setImageURI(it)
+            imageUri?.let { uri ->
+                val takeFlags: Int = result.data?.flags?.and(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                ) ?: 0
+                requireActivity().contentResolver.takePersistableUriPermission(uri, takeFlags)
+
+                surfspot.image = uri.toString()
+                binding.SurfspotImage.setImageURI(uri)
             }
         }
     }
@@ -66,7 +71,7 @@ class AddSpotFragment : Fragment() {
 
         _binding = FragmentAddSpotBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val surfspotId = args.surfspotId
+        val surfspotId = args.surfspotid
 
         addSpotViewModel = ViewModelProvider(this).get(AddSpotViewModel::class.java)
         addSpotViewModel.observableStatus.observe(viewLifecycleOwner, Observer {

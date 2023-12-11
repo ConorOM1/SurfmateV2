@@ -13,6 +13,6 @@ interface SurfmateStore {
     fun findById(userid:String, surfspotid: String,
                  surfspot: MutableLiveData<SurfmateModel>)
     fun create(firebaseUser: MutableLiveData<FirebaseUser>, surfspot: SurfmateModel)
-    fun delete(userid:String, surfspotid: String)
+    fun delete(userid:String, surfspotid: String, callback: (Boolean) -> Unit)
     fun update(userid:String, surfspotid: String, surfspot: SurfmateModel)
 }

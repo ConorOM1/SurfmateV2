@@ -36,12 +36,15 @@ object FirebaseDBManager : SurfmateStore {
             })
     }
 
-    override fun findById(
-        userid: String,
-        surfspotid: String,
-        surfspot: MutableLiveData<SurfmateModel>
-    ) {
-        TODO("Not yet implemented")
+    override fun findById(userid: String, surfspotid: String, surfspot: MutableLiveData<SurfmateModel>) {
+
+        database.child("user-surfspots").child(userid)
+            .child(surfspotid).get().addOnSuccessListener {
+                surfspot.value = it.getValue(SurfmateModel::class.java)
+                Timber.i("firebase Got value ${it.value}")
+            }.addOnFailureListener{
+                Timber.e("firebase Error getting data $it")
+            }
     }
 
     override fun create(firebaseUser: MutableLiveData<FirebaseUser>, surfspot: SurfmateModel) {
@@ -63,12 +66,30 @@ object FirebaseDBManager : SurfmateStore {
         database.updateChildren(childAdd)
     }
 
-    override fun delete(userid: String, surfspotid: String) {
-        TODO("Not yet implemented")
+    override fun delete(userid: String, surfspotid: String, callback: (Boolean) -> Unit) {
+        val childDelete : MutableMap<String, Any?> = HashMap()
+        childDelete["/surfspots/$surfspotid"] = null
+        childDelete["/user-surfspots/$userid/$surfspotid"] = null
+
+        database.updateChildren(childDelete) { databaseError, _ ->
+            if (databaseError != null) {
+                Timber.e("Firebase deletion failed: ${databaseError.message}")
+            } else {
+                Timber.i("Firebase deletion succeeded")
+            }
+        }
     }
 
+
     override fun update(userid: String, surfspotid: String, surfspot: SurfmateModel) {
-        TODO("Not yet implemented")
+
+        val surfspotValues = surfspot.toMap()
+
+        val childUpdate : MutableMap<String, Any?> = HashMap()
+        childUpdate["surfspots/$surfspotid"] = surfspotValues
+        childUpdate["user-surfspots/$userid/$surfspotid"] = surfspotValues
+
+        database.updateChildren(childUpdate)
     }
 
 }

@@ -55,7 +55,7 @@ object SurfmateManager : SurfmateStore {
         TODO("Not yet implemented")
     }
 
-    override fun delete(userid: String, surfspotid: String) {
+    override fun delete(userid: String, surfspotid: String, callback: (Boolean) -> Unit) {
         TODO("Not yet implemented")
     }
 

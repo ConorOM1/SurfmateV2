@@ -24,7 +24,13 @@ class SurfmateAdapter constructor(
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val surfspot = surfspots[holder.adapterPosition]
+        holder.itemView.tag = surfspot
         holder.bind(surfspot, listener)
+    }
+
+    fun removeAt(position: Int) {
+        surfspots.removeAt(position)
+        notifyItemRemoved(position)
     }
 
     override fun getItemCount(): Int = surfspots.size

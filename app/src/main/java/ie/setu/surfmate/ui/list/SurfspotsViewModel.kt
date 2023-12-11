@@ -14,9 +14,11 @@ class SurfspotsViewModel : ViewModel() {
     val observableSurfspotsList: LiveData<List<SurfmateModel>>
         get() = surfspots
     private var firebaseUser: FirebaseUser? = null
+    var liveFirebaseUser = MutableLiveData<FirebaseUser>()
 
     fun setFirebaseUser(user: FirebaseUser) {
         firebaseUser = user
+        liveFirebaseUser.value = user
         load()
     }
 
@@ -26,6 +28,21 @@ class SurfspotsViewModel : ViewModel() {
             Timber.i("Surf spots Load Success : ${surfspots.value.toString()}")
         } catch (e: Exception) {
             Timber.i("Surf spots Load Error : ${e.message}")
+        }
+    }
+
+    fun delete(userid: String, id: String?) {
+        if (id.isNullOrEmpty()) {
+            Timber.e("Invalid 'id' for deletion")
+            return
+        }
+
+        FirebaseDBManager.delete(userid, id) { success ->
+            if (success) {
+                Timber.i("Surf spot Delete Success")
+            } else {
+                Timber.e("Surf spot Delete Error")
+            }
         }
     }
 }

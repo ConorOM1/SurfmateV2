@@ -7,6 +7,7 @@ import com.squareup.picasso.Picasso
 import ie.setu.surfmate.R
 import ie.setu.surfmate.databinding.CardSurfmateBinding
 import ie.setu.surfmate.models.SurfmateModel
+import ie.setu.surfmate.utils.customTransformation
 
 interface SurfmateListener {
     fun onSurfspotClick(surfspot: SurfmateModel)
@@ -44,7 +45,7 @@ class SurfmateAdapter constructor(
             surfspot.image?.let {
                 Picasso.get()
                     .load(it)
-                    .placeholder(com.google.android.material.R.drawable.mtrl_switch_thumb_unchecked)
+                    .transform(customTransformation())
                     .error(R.drawable.surfmate_logo)
                     .resize(400, 400)
                     .into(binding.imageIcon)

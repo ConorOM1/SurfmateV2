@@ -17,11 +17,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseUser
+import com.squareup.picasso.Picasso
 import ie.setu.surfmate.R
 import ie.setu.surfmate.ui.auth.LoggedInViewModel
 import ie.setu.surfmate.databinding.ActivityMainBinding
 import ie.setu.surfmate.databinding.NavHeaderMainBinding
 import ie.setu.surfmate.ui.auth.Login
+import ie.setu.surfmate.utils.customTransformation
+
 
 class Home : AppCompatActivity() {
 
@@ -73,6 +76,12 @@ class Home : AppCompatActivity() {
         var headerView = homeBinding.navView.getHeaderView(0)
         navHeaderMainBinding = NavHeaderMainBinding.bind(headerView)
         navHeaderMainBinding.navHeaderEmail.text = currentUser.email
+        navHeaderMainBinding.navHeaderName.text = currentUser.displayName
+        Picasso.get().load(currentUser.photoUrl)
+            .resize(200, 200)
+            .transform(customTransformation())
+            .centerCrop()
+            .into(navHeaderMainBinding.navHeaderImage)
     }
 
     override fun onSupportNavigateUp(): Boolean {

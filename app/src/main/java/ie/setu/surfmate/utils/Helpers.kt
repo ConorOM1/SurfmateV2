@@ -1,11 +1,15 @@
 package ie.setu.surfmate.utils
 
 import android.content.Intent
+import android.graphics.Color
+import android.view.animation.Transformation
 import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import ie.setu.surfmate.R
+import com.makeramen.roundedimageview.RoundedTransformationBuilder
+
 
 fun createLoader(activity: FragmentActivity) : androidx.appcompat.app.AlertDialog {
     val loaderBuilder = AlertDialog.Builder(activity)
@@ -45,6 +49,14 @@ fun serviceAvailableMessage(activity: FragmentActivity) {
         Toast.LENGTH_LONG
     ).show()
 }
+
+fun customTransformation() : com.squareup.picasso.Transformation =
+    RoundedTransformationBuilder()
+        .borderColor(Color.WHITE)
+        .borderWidthDp(2F)
+        .cornerRadiusDp(35F)
+        .oval(false)
+        .build()
 
 fun showImagePicker(intentLauncher: ActivityResultLauncher<Intent>) {
     var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)

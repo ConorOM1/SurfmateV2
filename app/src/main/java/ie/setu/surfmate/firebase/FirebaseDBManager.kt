@@ -92,4 +92,25 @@ object FirebaseDBManager : SurfmateStore {
         database.updateChildren(childUpdate)
     }
 
+    fun updateImageRef(userid: String,imageUri: String) {
+
+        val userSurfspots = database.child("user-surfspots").child(userid)
+        val allSurfspots = database.child("surfspots")
+
+        userSurfspots.addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {}
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach {
+                        //Update Users imageUri
+                        it.ref.child("profilepic").setValue(imageUri)
+                        //Update all surfspots that match 'it'
+                        val surfspot = it.getValue(SurfmateModel::class.java)
+                        allSurfspots.child(surfspot!!.uid!!)
+                            .child("profilepic").setValue(imageUri)
+                    }
+                }
+            })
+    }
+
 }

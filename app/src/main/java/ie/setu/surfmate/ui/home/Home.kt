@@ -1,9 +1,11 @@
 package ie.setu.surfmate.ui.home
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -17,13 +19,17 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseUser
+import android.view.View
 import com.squareup.picasso.Picasso
 import ie.setu.surfmate.R
 import ie.setu.surfmate.ui.auth.LoggedInViewModel
 import ie.setu.surfmate.databinding.ActivityMainBinding
 import ie.setu.surfmate.databinding.NavHeaderMainBinding
+import ie.setu.surfmate.firebase.FirebaseImageManager
 import ie.setu.surfmate.ui.auth.Login
 import ie.setu.surfmate.utils.customTransformation
+import ie.setu.surfmate.utils.showImagePicker
+import timber.log.Timber
 
 
 class Home : AppCompatActivity() {
@@ -33,6 +39,10 @@ class Home : AppCompatActivity() {
     private lateinit var navHeaderMainBinding: NavHeaderMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var loggedInViewModel: LoggedInViewModel
+    private lateinit var headerView : View
+    private lateinit var intentLauncher : ActivityResultLauncher<Intent>
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +64,7 @@ class Home : AppCompatActivity() {
 
         val navView = homeBinding.navView
         navView.setupWithNavController(navController)
+        initNavHeader()
     }
 
     public override fun onStart() {
@@ -61,7 +72,7 @@ class Home : AppCompatActivity() {
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         loggedInViewModel.liveFirebaseUser.observe(this, Observer { firebaseUser ->
             if (firebaseUser != null)
-                updateNavHeader(loggedInViewModel.liveFirebaseUser.value!!)
+                updateNavHeader(firebaseUser)
         })
 
         loggedInViewModel.loggedOut.observe(this, Observer { loggedout ->
@@ -72,17 +83,58 @@ class Home : AppCompatActivity() {
 
     }
 
-    private fun updateNavHeader(currentUser: FirebaseUser) {
-        var headerView = homeBinding.navView.getHeaderView(0)
+    private fun initNavHeader() {
+        Timber.i("DX Init Nav Header")
+        headerView = homeBinding.navView.getHeaderView(0)
         navHeaderMainBinding = NavHeaderMainBinding.bind(headerView)
-        navHeaderMainBinding.navHeaderEmail.text = currentUser.email
-        navHeaderMainBinding.navHeaderName.text = currentUser.displayName
-        Picasso.get().load(currentUser.photoUrl)
-            .resize(200, 200)
-            .transform(customTransformation())
-            .centerCrop()
-            .into(navHeaderMainBinding.navHeaderImage)
+        navHeaderMainBinding.navHeaderImage.setOnClickListener {
+            showImagePicker(intentLauncher)
+        }
     }
+    private fun updateNavHeader(currentUser: FirebaseUser) {
+        FirebaseImageManager.imageUri.observe(this) { result ->
+            if (result == Uri.EMPTY) {
+                Timber.i("DX NO Existing imageUri")
+                if (currentUser.photoUrl != null) {
+                    //if you're a google user
+                    FirebaseImageManager.updateUserImage(
+                        currentUser.uid,
+                        currentUser.photoUrl,
+                        navHeaderMainBinding.navHeaderImage,
+                        false
+                    )
+                } else {
+                    Timber.i("DX Loading Existing Default imageUri")
+                    FirebaseImageManager.updateDefaultImage(
+                        currentUser.uid,
+                        R.drawable.surfmate_logo,
+                        navHeaderMainBinding.navHeaderImage
+                    )
+                }        } else // load existing image from firebase
+            {
+                Timber.i("DX Loading Existing imageUri")
+                FirebaseImageManager.updateUserImage(
+                    currentUser.uid,
+                    FirebaseImageManager.imageUri.value,
+                    navHeaderMainBinding.navHeaderImage, false
+                )
+            }    }
+        navHeaderMainBinding.navHeaderEmail.text = currentUser.email
+        if(currentUser.displayName != null)
+            navHeaderMainBinding.navHeaderName.text = currentUser.displayName
+    }
+
+//    private fun updateNavHeader(currentUser: FirebaseUser) {
+//        var headerView = homeBinding.navView.getHeaderView(0)
+//        navHeaderMainBinding = NavHeaderMainBinding.bind(headerView)
+//        navHeaderMainBinding.navHeaderEmail.text = currentUser.email
+//        navHeaderMainBinding.navHeaderName.text = currentUser.displayName
+//        Picasso.get().load(currentUser.photoUrl)
+//            .resize(200, 200)
+//            .transform(customTransformation())
+//            .centerCrop()
+//            .into(navHeaderMainBinding.navHeaderImage)
+//    }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)

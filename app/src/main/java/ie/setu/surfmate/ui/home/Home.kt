@@ -20,6 +20,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseUser
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import com.squareup.picasso.Picasso
 import ie.setu.surfmate.R
 import ie.setu.surfmate.ui.auth.LoggedInViewModel
@@ -28,6 +30,7 @@ import ie.setu.surfmate.databinding.NavHeaderMainBinding
 import ie.setu.surfmate.firebase.FirebaseImageManager
 import ie.setu.surfmate.ui.auth.Login
 import ie.setu.surfmate.utils.customTransformation
+import ie.setu.surfmate.utils.readImageUri
 import ie.setu.surfmate.utils.showImagePicker
 import timber.log.Timber
 
@@ -80,6 +83,7 @@ class Home : AppCompatActivity() {
                 startActivity(Intent(this, Login::class.java))
             }
         })
+        registerImagePickerCallback()
 
     }
 
@@ -122,6 +126,25 @@ class Home : AppCompatActivity() {
         navHeaderMainBinding.navHeaderEmail.text = currentUser.email
         if(currentUser.displayName != null)
             navHeaderMainBinding.navHeaderName.text = currentUser.displayName
+    }
+
+    private fun registerImagePickerCallback() {
+        intentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                when(result.resultCode){
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            Timber.i("DX registerPickerCallback() ${readImageUri(result.resultCode, result.data).toString()}")
+                            FirebaseImageManager
+                                .updateUserImage(loggedInViewModel.liveFirebaseUser.value!!.uid,
+                                    readImageUri(result.resultCode, result.data),
+                                    navHeaderMainBinding.navHeaderImage,
+                                    true)
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
     }
 
 //    private fun updateNavHeader(currentUser: FirebaseUser) {

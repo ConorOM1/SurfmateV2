@@ -54,4 +54,10 @@ class SurfmateAdapter constructor(
             binding.root.setOnClickListener { listener.onSurfspotClick(surfspot) }
         }
     }
+
+    fun updateData(newSurfspots: List<SurfmateModel>) {
+        surfspots.clear()
+        surfspots.addAll(newSurfspots)
+        notifyDataSetChanged()
+    }
 }

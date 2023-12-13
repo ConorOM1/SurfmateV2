@@ -45,4 +45,11 @@ class SurfspotsViewModel : ViewModel() {
             }
         }
     }
+
+    fun filterSurfspots(query: String?) {
+        val filteredSpots = surfspots.value?.filter {
+            it.name?.contains(query ?: "", ignoreCase = true) == true
+        }
+        surfspots.value = filteredSpots.orEmpty()
+    }
 }

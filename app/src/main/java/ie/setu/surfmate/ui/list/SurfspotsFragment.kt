@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -50,7 +51,7 @@ class SurfspotsFragment : Fragment(), SurfmateListener {
 
         _binding = FragmentListSpotsBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
-
+        binding.recyclerView.adapter = SurfmateAdapter(arrayListOf(), this)
         listViewModel = ViewModelProvider(this).get(SurfspotsViewModel::class.java)
         loginRegisterViewModel = ViewModelProvider(requireActivity()).get(LoginRegisterViewModel::class.java)
 
@@ -122,6 +123,18 @@ class SurfspotsFragment : Fragment(), SurfmateListener {
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_surfspots, menu)
+                val searchItem = menu.findItem(R.id.action_search)
+                val searchView = searchItem.actionView as SearchView
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        listViewModel.filterSurfspots(newText)
+                        return true
+                    }
+                })
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -132,7 +145,7 @@ class SurfspotsFragment : Fragment(), SurfmateListener {
     }
 
     private fun render(surfspots: ArrayList<SurfmateModel>) {
-        binding.recyclerView.adapter = SurfmateAdapter(surfspots, this)
+        (binding.recyclerView.adapter as? SurfmateAdapter)?.updateData(surfspots)
     }
 
     override fun onResume() {

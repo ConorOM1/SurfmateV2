@@ -26,6 +26,8 @@
     <string name="some_fields_required">More fields required</string>
     <string name="aboutUs_message">Welcome to Surfmate !</string>
     <string name="messageLoading">Please Wait, loading...</string>
+    <string name="google_api_key">AIzaSyDuqUV3FTBeD86pp91HZCt_68e_sivvx9g</string>
+
 
 
     <!-- START Firebase Resources-->

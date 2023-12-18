@@ -24,6 +24,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ie.setu.surfmate.ui.auth.LoggedInViewModel
 import ie.setu.surfmate.ui.list.SurfspotsViewModel
+import ie.setu.surfmate.ui.map.MapsViewModel
 
 class AddSpotFragment : Fragment() {
 
@@ -36,6 +37,7 @@ class AddSpotFragment : Fragment() {
     private val args by navArgs<AddSpotFragmentArgs>()
     private val surfspotsViewModel: SurfspotsViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    private val mapsViewModel: MapsViewModel by activityViewModels()
 
 
 
@@ -118,8 +120,8 @@ class AddSpotFragment : Fragment() {
                         name = surfspot.name,
                         observations = surfspot.observations,
                         image = surfspot.image,
-                        lat = surfspot.lat,
-                        lng = surfspot.lng,
+                        lat = mapsViewModel.currentLocation.value!!.latitude,
+                        lng = mapsViewModel.currentLocation.value!!.longitude,
                         zoom = surfspot.zoom,
                         rating = surfspot.rating,
                         email = loggedInViewModel.liveFirebaseUser.value?.email ?: ""

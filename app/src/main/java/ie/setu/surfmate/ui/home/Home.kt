@@ -1,13 +1,12 @@
 package ie.setu.surfmate.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -20,16 +19,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseUser
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import com.squareup.picasso.Picasso
+import androidx.activity.viewModels
 import ie.setu.surfmate.R
 import ie.setu.surfmate.ui.auth.LoggedInViewModel
 import ie.setu.surfmate.databinding.ActivityMainBinding
 import ie.setu.surfmate.databinding.NavHeaderMainBinding
 import ie.setu.surfmate.firebase.FirebaseImageManager
 import ie.setu.surfmate.ui.auth.Login
-import ie.setu.surfmate.utils.customTransformation
+import ie.setu.surfmate.ui.map.MapsViewModel
+import ie.setu.surfmate.utils.checkLocationPermissions
+import ie.setu.surfmate.utils.isPermissionGranted
 import ie.setu.surfmate.utils.readImageUri
 import ie.setu.surfmate.utils.showImagePicker
 import timber.log.Timber
@@ -44,6 +44,8 @@ class Home : AppCompatActivity() {
     private lateinit var loggedInViewModel: LoggedInViewModel
     private lateinit var headerView : View
     private lateinit var intentLauncher : ActivityResultLauncher<Intent>
+    private val mapsViewModel : MapsViewModel by viewModels()
+
 
 
 
@@ -68,6 +70,9 @@ class Home : AppCompatActivity() {
         val navView = homeBinding.navView
         navView.setupWithNavController(navController)
         initNavHeader()
+        if(checkLocationPermissions(this)) {
+            mapsViewModel.updateCurrentLocation()
+        }
     }
 
     public override fun onStart() {
@@ -169,5 +174,20 @@ class Home : AppCompatActivity() {
         val intent = Intent(this, Login::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (isPermissionGranted(requestCode, grantResults))
+            mapsViewModel.updateCurrentLocation()
+        else {
+            // permissions denied, so use a default location
+            mapsViewModel.currentLocation.value = Location("Default").apply {
+                latitude = 52.245696
+                longitude = -7.139102
+            }
+        }
+        Timber.i("LOC : %s", mapsViewModel.currentLocation.value)
     }
 }

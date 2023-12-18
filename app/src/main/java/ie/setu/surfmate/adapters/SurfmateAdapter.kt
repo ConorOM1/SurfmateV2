@@ -41,6 +41,8 @@ class SurfmateAdapter constructor(
 
         fun bind(surfspot: SurfmateModel, listener: SurfmateListener) {
             binding.name.text = surfspot.name
+            binding.ratingBar.rating = surfspot.rating ?: 0f
+
 
             surfspot.image?.let {
                 Picasso.get()

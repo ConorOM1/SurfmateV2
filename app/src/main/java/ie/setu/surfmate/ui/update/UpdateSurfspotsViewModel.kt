@@ -1,16 +1,10 @@
 package ie.setu.surfmate.ui.update
 
-import android.graphics.Bitmap
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ie.setu.surfmate.firebase.FirebaseDBManager
 import ie.setu.surfmate.models.SurfmateModel
 import timber.log.Timber
-import java.io.ByteArrayOutputStream
-import java.io.File
-import android.content.Context
-
 
 class UpdateSurfspotsViewModel() : ViewModel() {
     private val surfspot = MutableLiveData<SurfmateModel>()
@@ -22,9 +16,9 @@ class UpdateSurfspotsViewModel() : ViewModel() {
         }
 
 
-    fun getSurfspot(userid:String, id: String) {
+    fun getSurfspot(userid:String, uid: String) {
         try {
-            FirebaseDBManager.findById(userid, id, surfspot)
+            FirebaseDBManager.findById(userid, uid, surfspot)
             Timber.i("Detail getSurfspot() Success : ${
                 surfspot.value.toString()}")
         }
@@ -33,9 +27,9 @@ class UpdateSurfspotsViewModel() : ViewModel() {
         }
     }
 
-    fun updateSurfspot(userid:String, id: String,surfspot: SurfmateModel) {
+    fun updateSurfspot(userid:String, uid: String,surfspot: SurfmateModel) {
         try {
-            FirebaseDBManager.update(userid, id, surfspot)
+            FirebaseDBManager.update(userid, uid, surfspot)
             Timber.i("Surf spot update() Success : $surfspot")
         }
         catch (e: Exception) {

@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class SurfmateModel(
     var email: String? = "joe@bloggs.com",
-    var id: Long? = 0L,
+    var id: String? = "",
     var image: String? = "",
     var lat: Double = 0.0,
     var lng: Double = 0.0,

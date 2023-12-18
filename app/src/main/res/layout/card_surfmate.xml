@@ -27,7 +27,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/surfspotName"
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -37,19 +37,18 @@
             app:layout_constraintHorizontal_bias="0.048"
             app:layout_constraintStart_toEndOf="@+id/imageIcon"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="A Name" />
+            tools:text="Name" />
 
-        <TextView
-            android:id="@+id/name"
+        <RatingBar
+            android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAlignment="viewStart"
+            android:layout_marginTop="52dp"
+            android:layout_marginEnd="64dp"
+            android:isIndicator="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.052"
-            app:layout_constraintStart_toEndOf="@+id/imageIcon"
-            app:layout_constraintTop_toBottomOf="@id/surfspotName"
-            tools:text="Users Name" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Rating" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

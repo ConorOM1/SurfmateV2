@@ -53,18 +53,19 @@
     <fragment
         android:id="@+id/updateSurfspotsFragment"
         android:name="ie.setu.surfmate.ui.update.UpdateSurfspotsFragment"
-        android:label="UpdateSurfspotsFragment" >
+        android:label="View/Update Surf Spot" >
         <action
             android:id="@+id/action_updateSurfspotsFragment_to_listFragment"
             app:destination="@id/listFragment" />
         <argument
             android:name="surfspotid"
-            app:argType="string" />
+            app:argType="string"
+            android:defaultValue="" />
     </fragment>
     <fragment
         android:id="@+id/mapsFragment"
         android:name="ie.setu.surfmate.ui.map.MapsFragment"
-        android:label="fragment_maps"
+        android:label="Spot Map"
         tools:layout="@layout/fragment_maps" >
         <action
             android:id="@+id/action_mapsFragment_to_addFragment"

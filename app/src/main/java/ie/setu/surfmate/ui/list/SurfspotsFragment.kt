@@ -102,8 +102,8 @@ class SurfspotsFragment : Fragment(), SurfmateListener {
 
 
     override fun onSurfspotClick(surfspot: SurfmateModel) {
-        surfspot.id?.let { surfspotId ->
-            val action = SurfspotsFragmentDirections.actionListFragmentToUpdateSurfspotsFragment(surfspotId.toString())
+        surfspot.uid?.let { surfspotuid ->
+            val action = SurfspotsFragmentDirections.actionListFragmentToUpdateSurfspotsFragment(surfspotuid)
             findNavController().navigate(action)
         } ?: Timber.e("Surfspot ID is null")
     }

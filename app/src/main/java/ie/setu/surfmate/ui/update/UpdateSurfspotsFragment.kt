@@ -14,19 +14,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import ie.setu.surfmate.databinding.FragmentUpdateSpotBinding
-import ie.setu.surfmate.ui.auth.LoggedInViewModel
-import ie.setu.surfmate.ui.list.SurfspotsViewModel
-import timber.log.Timber
-import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import ie.setu.surfmate.R
+import ie.setu.surfmate.databinding.FragmentUpdateSpotBinding
 import ie.setu.surfmate.models.SurfmateModel
-import ie.setu.surfmate.utils.showImagePicker
-import android.widget.Toast
-
-
-
+import ie.setu.surfmate.ui.auth.LoggedInViewModel
+import timber.log.Timber
+import com.google.android.material.snackbar.Snackbar
 
 class UpdateSurfspotsFragment : Fragment() {
 
@@ -34,84 +28,50 @@ class UpdateSurfspotsFragment : Fragment() {
     private val args by navArgs<UpdateSurfspotsFragmentArgs>()
     private var _binding: FragmentUpdateSpotBinding? = null
     private val binding get() = _binding!!
-    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    private val loggedInViewModel: LoggedInViewModel by activityViewModels()
     private lateinit var imageIntentLauncher: ActivityResultLauncher<Intent>
+    private var surfspot = SurfmateModel()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentUpdateSpotBinding.inflate(inflater, container, false)
         val root = binding.root
 
         updateViewModel = ViewModelProvider(this).get(UpdateSurfspotsViewModel::class.java)
-        updateViewModel.observableSurfspot.observe(viewLifecycleOwner, Observer { surfspot ->
-            if (surfspot != null) {
-                render(surfspot)
-            } else {
-                Timber.i("No surfspot data available")
-            }
-        })
-        // Fetch the surf spot data
-        val surfspotId = args.surfspotid
-        updateViewModel.getSurfspot(loggedInViewModel.liveFirebaseUser.value?.uid!!, surfspotId)
-
-        // Set up observers
-        updateViewModel.observableSurfspot.observe(viewLifecycleOwner, Observer { surfspot ->
-            if (surfspot != null) {
-                render(surfspot)
+        updateViewModel.getSurfspot(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.surfspotid)
+        updateViewModel.observableSurfspot.observe(viewLifecycleOwner, Observer { currentSurfspot ->
+            if (currentSurfspot != null) {
+                render(currentSurfspot)
+                surfspot = currentSurfspot
             } else {
                 Timber.i("No surfspot data available")
             }
         })
 
-        binding.chooseImage.setOnClickListener {
-            showImagePicker(imageIntentLauncher)
-        }
+        setButtonListener(binding)
         registerImagePickerCallback()
-
-
-        binding.btnUpdate.setOnClickListener {
-            updateViewModel.updateSurfspot(loggedInViewModel.liveFirebaseUser.value?.uid!!,
-                args.surfspotid, binding.surfspotvm?.observableSurfspot!!.value!!)
-            findNavController().navigateUp()
-        }
-
-//        binding.deleteSurfspot.setOnClickListener {
-//            updateViewModel.delete(loggedInViewModel.liveFirebaseUser.value?.email!!,
-//                updateViewModel.observableSurfspot.value?.uid!!)
-//            findNavController().navigateUp()
-//        }
 
         return root
     }
 
-    private fun render(surfspot: SurfmateModel?) {
-        if (surfspot != null) {
-            binding.name.setText(surfspot.name)
-            binding.surfspotObservations.setText(surfspot.observations)
+    private fun render(currentSurfspot: SurfmateModel) {
+        binding.name.setText(currentSurfspot.name)
+        binding.surfspotObservations.setText(currentSurfspot.observations)
+        binding.ratingBar.rating = currentSurfspot.rating ?: 0f
+        Picasso.get().load(currentSurfspot.image).into(binding.SurfspotImage)
+    }
 
-            if (!surfspot.image.isNullOrEmpty()) {
-                Picasso.get().load(surfspot.image).into(binding.SurfspotImage)
+    private fun setButtonListener(layout: FragmentUpdateSpotBinding) {
+        layout.btnUpdate.setOnClickListener {
+            surfspot.name = binding.name.text.toString()
+            surfspot.observations = binding.surfspotObservations.text.toString()
+            surfspot.rating = binding.ratingBar.rating
+
+            if (!surfspot.name.isNullOrEmpty() && !surfspot.observations.isNullOrEmpty()) {
+                updateViewModel.updateSurfspot(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.surfspotid, surfspot)
+                findNavController().popBackStack()
             } else {
-                binding.SurfspotImage.setImageResource(R.mipmap.ic_launcher) // Default image
-            }
-
-            binding.ratingBar.rating = surfspot.rating ?: 0f
-        } else {
-            Toast.makeText(context, getString(R.string.surfspotError), Toast.LENGTH_LONG).show()
+                Snackbar.make(it, R.string.some_fields_required, Snackbar.LENGTH_LONG).show()            }
         }
-    }
-
-
-
-    override fun onResume() {
-        super.onResume()
-        updateViewModel.getSurfspot(loggedInViewModel.liveFirebaseUser.value?.uid!!,
-            args.surfspotid)
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun registerImagePickerCallback() {

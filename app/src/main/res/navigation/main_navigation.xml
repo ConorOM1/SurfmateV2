@@ -61,4 +61,13 @@
             android:name="surfspotid"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="ie.setu.surfmate.ui.map.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_mapsFragment_to_addFragment"
+            app:destination="@id/addFragment" />
+    </fragment>
 </navigation>

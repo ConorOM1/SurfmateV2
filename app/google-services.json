@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "266385521910-qkdbicg38cptqjtrovohe92vo97kip9b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ie.setu.surfmate",
+            "certificate_hash": "3da168d1a9ccf6d27189e3af2d2f59b464e0acc0"
+          }
+        },
+        {
           "client_id": "266385521910-55sts9ern65uv3a59l269ov7n6tn7ql0.apps.googleusercontent.com",
           "client_type": 3
         }

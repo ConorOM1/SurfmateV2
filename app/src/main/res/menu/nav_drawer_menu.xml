@@ -12,6 +12,10 @@
             android:icon="@drawable/ic_menu_add"
             android:title="@string/menu_add" />
         <item
+            android:id="@+id/mapsFragment"
+            android:icon="@drawable/ic_menu_map"
+            android:title="@string/viewMap_button" />
+        <item
             android:id="@+id/aboutFragment"
             android:icon="@drawable/ic_menu_about"
             android:title="@string/menu_about" />

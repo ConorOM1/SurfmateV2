@@ -24,7 +24,7 @@ The main technologies used:
 + Google Map functionality for individual spots aswell as an all spots view
 + Surf spot information: name, observations, add image, location & rating
 + User can add image via gallery
-+ User profile pic storage via Firebae Storage
++ User profile pic storage via Firebase Storage
 + Navigation Bar
 + Swipe functionalty for Editing, Deleting & Refreshing
 + Search/Filter toolbar
@@ -68,7 +68,7 @@ I decided to implement a 'feature branch' approach. Features that i felt were mo
 
 ## Personal Statement
 
-This has been a very challenging and rewarding project in a lot of ways. Using an MVVM design is something that would bear a lot of fruit in the development of larger projects going forward. Firebase has also proved to be a very versatile tool and i particularly enjoyed this aspect. The next feature i would have liked to incorporate woud be an API for marine data to create a surfing report based on the lat and lng coordinates. This is something i have began to research(see references) but will not implement in this version of Surfmate. Overall I am happy with what i was able to implement for this assignment.
+This has been a very challenging and rewarding project in a lot of ways. Using an MVVM design is something that would bear a lot of fruit in the development of larger projects going forward. Firebase has also proved to be a very versatile tool and i particularly enjoyed this aspect. The next feature i would have liked to incorporate would be an API for marine data to create a surfing report based on the lat and lng coordinates. This is something i have began to research(see references) but will not implement in this version of Surfmate. Overall I am happy with what i was able to implement for this assignment.
 
 ## References
 
